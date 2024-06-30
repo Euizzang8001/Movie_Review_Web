@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>admin page</title>
+    <style>
+        h1{
+            font-size: 36pt;
+        }
+        h2{
+            font-size:30pt;
+        }
+        h3{
+            font-size:25pt;
+        }
+        .error-label{
+            color: red;
+        }
+        .user {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .backtomain {
+            position: fixed;
+            top: 45px;
+            right: 0;
+            padding: 30px;
+        }
+
+        textarea {
+            width: 800px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+<!--로그인한 유저의 id를 나타내면서 mypage로 이동할 수 있는 부분-->
+<form class="user" action="/user" method="get">
+    ID:<input type="submit" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{username}}">
+</form>
+<br>
+<!--메인 화면으로 돌아갈 수 있는 기능 부분-->
+<form class="backtomain" action="/main" method="get">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="review" value="main">
+    <input type="hidden" name="movie" value="main">
+    <input type="submit" value="main page">
+</form>
+<!--자신(admin역할인)의 id를 나타내는 부분-->
+<h1>{{search}}</h1>
+<!--자신이 작성한 리뷰들을 볼 수 있는 부분으로 table형식으로 보여주는 부분-->
+<h2>[Reviews]</h2>
+<table border="1">
+    <thead>
+        <th>ratings</th>
+        <th>movies</th>
+        <th>review</th>
+        <th>time</th>
+        <th># likes</th>
+        <th>delete</th>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review[0] }}</td>
+<!--            특정 리뷰에 영화 제목을 클릭하면 해당 영화 페이지로 이동하는 기능 부분-->
+            <td><form action="/movie" method="get"><input type="hidden" name="username" value = "{{username}}"><input type="submit" name="title" value="{{review[1]}}"></form></td>
+            <td>{{ review[2] }}</td>
+            <td>{{ review[3] }}</td>
+            <td>{{ review[4] }}</td>
+            <td>
+<!--                특정 리뷰 옆 삭제를 클릭하면 해당 리뷰를 삭제할 수 있는 기능 부분-->
+                <form action="/delete" method="post">
+                    <input type="hidden" name="username" value="{{username}}">
+                    <input type="hidden" name="review_mid" value="{{review[5]}}">
+                    <input type="submit" name="delete" value="delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+<br>
+<hr>
+<!--영화를 등록할 수 있는 기능 부분-->
+<h2>[Add Movie]</h2>
+<!--영화 정보들을 작성하고 add를 클릭하면 영화를 등록할 수 있는 기능 부분-->
+<form action="/add" method="post">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{search}}">
+    Title: <input type="text" name="title"><br>
+    Director: <input type="text" name="director"><br>
+    Genre:
+    <select name="genre">
+        <option value="action">action</option>
+        <option value="comedy">comedy</option>
+        <option value="drama">drama</option>
+        <option value="fantasy">fantasy</option>
+        <option value="horror">horror</option>
+        <option value="mystery">mystery</option>
+        <option value="romance">romance</option>
+        <option value="thriller">thriller</option>
+        <option value="western">western</option>
+    </select><br>
+    Release Date:
+    <input type="date" name="rel_date"><br>
+    <input type="submit" name="add" value="Add">
+</form>

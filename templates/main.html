@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+    <style>
+        h1{
+            font-size: 36pt;
+        }
+        .error-label{
+            color: red;
+        }
+        .user{
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+<!--로그인한 유저의 id를 나타내면서 mypage로 이동할 수 있는 기능 부분-->
+<form class="user" action="/user" method="get">
+    ID:<input type="submit" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{username}}">
+
+</form>
+<h1>
+    Movies
+</h1>
+<!--db에 있는 영화들을 보여줄 때, 정렬을 하는 방법을 설정할 수 있는 기능 부분-->
+<form action="/sort" method="get">
+    <input type="hidden" name="username" value = "{{username}}">
+    <input type="hidden" name="review" value="{{review}}">
+    <input type="submit" name="movie" value="latest">
+    <input type="submit" name="movie" value="genre">
+    <input type="submit" name="movie" value="ratings"><br>
+</form>
+<!--db에 있는 영화들에 대한 정보를 table 형식으로 나타내는 부분-->
+<table border="1">
+    <thead>
+    <th>title</th>
+    <th>ratings</th>
+    <th>director</th>
+    <th>genre</th>
+    <th>release date</th>
+    </thead>
+    <tbody>
+        {% for movie in movies %}
+        <tr>
+            <td>
+<!--                특정 영화를 클릭하면 해당 영화 페이지로 이동하는 기능 부분-->
+                <form action="/movie" method="get">
+                    <input type="hidden" name="username" value = "{{username}}">
+                    <input type="submit" name="title" value="{{movie[0]}}">
+                </form>
+            </td>
+            <td>{{ movie[1] }}</td>
+            <td>{{ movie[2] }}</td>
+            <td>{{ movie[3] }}</td>
+            <td>{{ movie[4] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <hr>
+    <h1>Reviews</h1>
+<!--db에 있는 리뷰들을 보여줄 때, 정렬을 하는 방법을 설정할 수 있는 기능 부분-->
+<form action="/sort" method="get">
+    <input type="hidden" name="username" value = "{{username}}">
+    <input type="hidden" name="movie" value="{{movie}}">
+    <input type="submit" name="review" value="latest">
+    <input type="submit" name="review" value="title">
+    <input type="submit" name="review" value="followers">
+    <input type="submit" name="review" value="likes"><br>
+</form>
+<!--db에 있는 리뷰들에 대한 정보를 table 형식으로 나타내는 부분-->
+<table border="1">
+    <thead>
+        <th>ratings</th>
+        <th>user</th>
+        <th>title</th>
+        <th>review</th>
+        <th>time</th>
+        <th># likes</th>
+        <th>likes</th>
+    </thead>
+
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review[0] }}</td>
+<!--            리뷰를 작성한 사용자id를 클릭하면 해당 사용자 페이지로 이동하는 기능 부분-->
+            <td><form action="/user" method="get">
+                <input type="hidden" name="username" value = "{{username}}">
+                <input type="submit" name="search" value="{{review[1]}}">
+            </form></td>
+<!--            리뷰가 작성된 영화 제목을 클릭하면 해당 영화 페이지로 이동하는 기능 부분-->
+            <td><form action="/movie" method="get"><input type="hidden" name="username" value = "{{username}}"><input type="submit" name="title" value="{{review[2]}}"></form></td>
+            <td>{{ review[3] }}</td>
+            <td>{{ review[4] }}</td>
+            <td>{{ review[5] }}</td>
+            <td>
+<!--                특정 리뷰 옆 좋아요를 클릭하면 해당 리뷰에 좋아요를 할 수 있는 기능 부분-->
+                <form action="/like" method="post">
+                    <input type="hidden" name="username" value="{{username}}">
+                    <input type="hidden" name="review_uid" value="{{review[1]}}">
+                    <input type="hidden" name="review_mid" value="{{review[6]}}">
+                    <input type="hidden" name="page" value="main">
+                    <input type="submit" name="likes" value="likes">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

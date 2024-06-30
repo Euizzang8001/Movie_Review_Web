@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+    <style>
+        h1{
+            font-size: 36pt;
+        }
+        .error-label{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h1>
+    Movie Reviews
+</h1>
+<form action="/register" method="post">
+<!--    id와 비밀번호를 입력할 수 있는 부분-->
+    <label for="user_id">ID:</label><br>
+    <input id="user_id" type="text" name="id" value=""><br>
+
+    <label for="user_pwd">Password:</label><br>
+    <input id="user_pwd" type="password" name="password" value=""><br>
+<!--    로그인과 회원가입 중 원하는 기능을 선택할 수 있는 부분-->
+    <input type="submit" name="send" value="sign in">
+    <input type="submit" name="send" value="sign up"><br><br>
+<!--    에러 메시지를 나타내는 부분-->
+    <label class="error-label">{{error_message}}</label>
+</form>
+</body>
+</html>

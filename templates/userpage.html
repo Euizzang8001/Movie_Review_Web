@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user page</title>
+    <style>
+        h1{
+            font-size: 36pt;
+        }
+        h2{
+            font-size:30pt;
+        }
+        .user {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .backtomain {
+            position: fixed;
+            top: 45px;
+            right: 0;
+            padding: 30px;
+        }
+        textarea {
+            width: 800px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+<!--로그인한 유저의 id를 나타내면서 mypage로 이동할 수 있는 기능 부분-->
+<form class="user" action="/user" method="get">
+    ID:<input type="submit" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{username}}">
+</form>
+<br>
+<!--메인 화면으로 돌아갈 수 있는 기능 부분-->
+<form class="backtomain" action="/main" method="get">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="review" value="main">
+    <input type="hidden" name="movie" value="main">
+    <input type="submit" value="main page">
+</form>
+<!--해당 유저id를 나타냄-->
+<h1>{{search}}</h1>
+<!--해당 유저를 팔로우 할 수 있는 기능 부분-->
+<form action="/follow" method="post">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{search}}">
+    <input type="submit" name="follow" value="follow">
+</form>
+<!--해당 유저를 mute 할 수 있는 기능 부분-->
+<form action="/mute" method="post">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{search}}">
+    <input type="submit" name="mute" value="mute">
+</form>
+<br>
+<!--리뷰 부분-->
+<h2>[Reviews]</h2>
+<table border="1">
+<!--해당 페이지의 유저가 작성한 리뷰 정보들을 table로 나타내는 부분-->
+    <thead>
+        <th>ratings</th>
+        <th>movies</th>
+        <th>review</th>
+        <th>time</th>
+        <th># likes</th>
+        <th>like</th>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review[0] }}</td>
+            <!--해당 영화 페이지로 이동할 수 있는 기능 부분-->
+            <td><form action="/movie" method="get"><input type="hidden" name="username" value = "{{username}}"><input type="submit" name="title" value="{{review[1]}}"></form></td>
+            <td>{{ review[2] }}</td>
+            <td>{{ review[3] }}</td>
+            <td>{{ review[4] }}</td>
+            <td>
+<!--                해당 리뷰에 대하 좋아요를 누를 수 있는 기능 부분-->
+                <form action="/like" method="post">
+                    <input type="hidden" name="username" value="{{username}}">
+                    <input type="hidden" name="page" value="userpage">
+                    <input type="hidden" name="review_uid" value="{{search}}">
+                    <input type="hidden" name="review_mid" value="{{review[5]}}">
+                    <input type="submit" name="likes" value="likes">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+<br>
+<hr>
+<!--해당 페이지 사용자를 팔로우하는 사용자들을 나타낸 부분-->
+<h2>[Followers]</h2>
+<!--사용자 페이지로 이동할 수 있는 기능 부분-->
+<form  action="/user" method="get">
+    {% for follower in followers %}
+        <input type="hidden" name="username" value = "{{username}}">
+        <input type="submit" name="search" value="{{follower[0]}}">
+    {% endfor %}
+</form>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>my page</title>
+    <style>
+        h1{
+            font-size: 36pt;
+        }
+        h2{
+            font-size:30pt;
+        }
+        .error-label{
+            color: red;
+        }
+        .user {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .backtomain {
+            position: fixed;
+            top: 45px;
+            right: 0;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<!--로그인한 유저의 id를 나타내면서 mypage로 이동할 수 있는 기능 부분-->
+<form class="user" action="/user" method="get">
+    ID:<input type="submit" name="username" value="{{username}}">
+    <input type="hidden" name="search" value="{{username}}">
+</form>
+<br>
+<!--메인 화면으로 돌아갈 수 있는 기능 부분-->
+<form class="backtomain" action="/main" method="get">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="review" value="main">
+    <input type="hidden" name="movie" value="main">
+    <input type="submit" value="main page">
+</form>
+<!--사용자의 id를 나타내는 부분-->
+<h1>{{username}}</h1>
+<br>
+<!--사용자가 작성한 리뷰들을 나타내는 기능 부분-->
+<h2>[Reviews]</h2>
+<!--사용자가 작성한 리뷰들을 table형식으로 나타냄-->
+<table border="1">
+    <thead>
+        <th>ratings</th>
+        <th>movies</th>
+        <th>review</th>
+        <th>time</th>
+        <th># likes</th>
+        <th>delete</th>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review[0] }}</td>
+<!--        리뷰의 영화 이름 부분을 클릭하면 해당 영화 페이지로 이동하는 기능 부분-->
+            <td><form action="/movie" method="get"><input type="hidden" name="username" value = "{{username}}"><input type="submit" name="title" value="{{review[1]}}"></form></td>
+            <td>{{ review[2] }}</td>
+            <td>{{ review[3] }}</td>
+            <td>{{ review[4] }}</td>
+            <td>
+<!--                자신이 작성한 리뷰를 삭제할 수 있는 기능 부분-->
+                <form action="/delete" method="post">
+                    <input type="hidden" name="username" value="{{username}}">
+                    <input type="hidden" name="review_mid" value="{{review[5]}}">
+                    <input type="submit" name="delete" value="delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+<br>
+<hr>
+<!--사용자를 팔로우하는 사용자를 볼 수 있는 부분-->
+<h2>[Followers]</h2>
+<!--사용자 이름을 클릭하면 해당 사용자의 페이지로 이동하는 기능 부분-->
+<form  action="/user" method="get">
+    {% for follower in followers %}
+        <input type="hidden" name="username" value = "{{username}}">
+        <input type="submit" name="search" value="{{follower[0]}}">
+    {% endfor %}
+</form>
+<br>
+<hr>
+<!--해당 사용자가 팔로우하고 있는 사용자들을 보여주는 부분-->
+<h2>[Followd]</h2>
+<table border="1">
+    <thead>
+        <th>user</th>
+        <th>unfollow</th>
+    </thead>
+    <tbody>
+        {% for followd in followeds %}
+        <tr>
+            <td>
+<!--                사용자 이름 부분을 클릭하면 해당 사용자 페이지로 이동하는 기능 부분-->
+                <form action="/user" method="get">
+                    <input type="hidden" name="username" value = "{{username}}">
+                    <input type="submit" name="search" value="{{followd[0]}}">
+                </form>
+            </td>
+            <td>
+<!--                특정 사용자 옆 unfollow을 클릭하면 해당 사용자에 대한 팔로우를 삭제할 수 있는 기능 부분-->
+                <form action="/unfollow" method="post">
+                    <input type="hidden" name="username" value = "{{username}}">
+                    <input type="hidden" name="search" value="{{followd[0]}}">
+                    <input type="submit" name="unfollow" value="unfollow">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+<br>
+<!--사용자가 mute하고 있는 사용자를 보여주는 부분-->
+<h2>[Muted]</h2>
+<!--table형식으로 mute하고 있는 사용자들을 보여줌-->
+<table border="1">
+    <thead>
+        <th>user</th>
+        <th>unmute</th>
+    </thead>
+    <tbody>
+        {% for muted in muteds %}
+        <tr>
+            <td>
+<!--                사용자의 이름을 클릭하면 해당 사용자의 페이지로 이동-->
+                <form action="/user" method="get">
+                    <input type="hidden" name="username" value = "{{username}}">
+                    <input type="submit" name="search" value="{{muted[0]}}">
+                </form>
+            </td>
+            <td>
+<!--                특정 사용자 옆 unmute를 클릭하면 그 사용자를 unmute하는 기능 부분-->
+                <form action="/unmute" method="post">
+                    <input type="hidden" name="username" value = "{{username}}">
+                    <input type="hidden" name="search" value="{{muted[0]}}">
+                    <input type="submit" name="unmute" value="unmute">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login_fail</title>
+</head>
+<body>
+<!--오류 메시지를 받아 그것을 보여주는 부분-->
+<label class="error-label">{{error_message}}</label>
+<!--메인 화면으로 돌아갈 수 있는 기능 부분-->
+<form action="/main" method="get">
+    <input type="hidden" name="username" value="{{username}}">
+    <input type="hidden" name="movie" value="main">
+    <input type="hidden" name="review" value="main">
+    <input type="submit" name="send" value="main page">
+</form>
+</body>
+</html>
